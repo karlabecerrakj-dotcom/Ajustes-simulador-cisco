@@ -1,0 +1,182 @@
+//Ajustes para switches
+Switch>enable
+Switch#configure terminal
+Switch(config)#vlan 60
+Switch(config-vlan)#name rrhh
+Switch(config-vlan)#exit
+Switch(config)#vlan 50
+Switch(config-vlan)#name IT
+Switch(config-vlan)#EXIT
+Switch(config)#vlan 40
+Switch(config-vlan)#name NPI
+Switch(config)#exit
+
+Switch#configure terminal
+Switch(config)#interface fast 0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 60
+Switch(config-if)#exit
+Switch(config)#interface fast 0/2
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 50
+Switch(config-if)#exit
+Switch(config)#do write
+
+
+
+Switch(config)#interface vlan 60
+Switch(config-if)#ip address 10.1.1.10 255.0.0.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+
+//AJUSTE SWICTH MODE TRUNK
+// Truncar (configurar un puerto como troncal o trunk) en un switch Cisco sirve para transportar tráfico de múltiples VLANs a través de un único enlace físico 
+Switch>enable
+Switch#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#vlan 40
+Switch(config-vlan)#name rrhh
+Switch(config-vlan)#exit
+Switch(config)#vlan 30
+Switch(config-vlan)#name IITT
+Switch(config-vlan)#exit
+Switch(config)#interface fast 0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 40
+Switch(config-if)#exit
+Switch(config)#interface fast 0/2 
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 30
+Switch(config-if)#exit
+Switch(config)#do write
+Switch>ENABLE 
+Switch#CONFIGURE TERMINAL
+Switch(config)#INTERFACE VLAN 40
+Switch(config-if)#IP ADDRESS 172.16.1.10 255.255.0.0
+Switch(config-if)#NO SHUTDOWN
+Switch(config-if)#EXIT
+Switch(config)#INTERFACE VLAN 30
+Switch(config-if)#IP ADDRESS 192.166.50.10 255.255.255.0
+Switch(config-if)#NO SHUTDOWN
+Switch(config-if)#EXIT
+Switch(config)#IP DEFAULT-GATEWAY 172.16.1.254
+Switch(config)#INTERFACE FAST 0/24
+Switch(config-if)#SWITCHPORT MODE TRUNK
+Switch(config-if)#EXIT
+
+//Router Subneteo
+//añadir información de control, direcciones y etiquetas (cabeceras y colas) a los datos conforme pasan por las distintas capas de la red, 
+//o para empaquetar un protocolo dentro de otro con objetivos específicos de conectividad.
+Router>enable
+Router#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#interface fast 0/0.60
+Router(config-subif)#encapsulation dot1q 60
+Router(config-subif)#ip address 10.1.1.255 255.0.0.0
+Router(config-subif)#no shutdown
+Router(config-subif)#exit
+Router(config)#interface fast 0/0.50
+Router(config-subif)#encapsulation dot1q 50
+Router(config-subif)#ip address 172.17.1.254 255.255.0.0
+Router(config-subif)#no shutdown
+Router(config-subif)#exit
+Router(config)#interface fast 0/0
+Router(config-if)#no shutdown
+Router(config-if)#exit
+Router(config)#interface serial 0/0/0
+Router(config-if)#ip address 192.168.10.65 255.255.255.192
+Router(config-if)#no shutdown
+Router(config-if)#exit
+Router(config)#router rip
+Router(config-router)#version 2
+Router(config-router)#no auto-summary
+Router(config-router)#network 10.0.0.0
+Router(config-router)#network 172.17.0.0
+Router(config-router)#network 192.168.10.64
+Router(config-router)#do write
+Router(config-router)#exit
+
+//Router 3
+enable configure terminal
+
+interface fast 0/0.50
+encapsulation dot1q 50
+ip address 192.168.90.33 255.255.255.224
+no shutdown
+exit
+
+interface fast 0/0.60
+encapsulation dot1q 60
+ip address 192.168.100.33 255.255.255.240
+no shutdown
+exit
+
+interface fast 0/0.70
+encapsulation dot1q 70
+ip address 192.168.150.254 255.255.255.0
+no shutdown
+exit
+
+interface fast 0/0.80
+encapsulation dot1q 80
+ip address 192.168.160.254 255.255.255.0
+no shutdown
+exit
+
+interface serial 0/1/0
+ip address 20.1.1.2 255.0.0.0
+no shutdown
+exit
+
+interface serial 0/2/0
+ip address 30.1.1.1 255.0.0.0
+no shutdown
+exit
+
+router rip
+version 2
+no auto-summary
+network 20.0.0.0
+network 30.0.0.0
+network 192.168.160.0
+network 192.168.150.0
+network 192.168.100.32
+network 192.168.90.32
+
+hostname r3
+ip domain-name univer.edu
+username Jorge privilege 15 secret Jorge
+crypto key generate rsa
+.
+.
+[512]:1024
+linet vty 0 4
+login local
+transport input ssh
+
+exit
+do write
+
+R3: S1.1
+enable
+configure terminal
+
+vlan 50
+name finanzas
+exit
+
+vlan 60
+name rrhh
+exit
+
+interface fast 0/1
+switchport mode trunk
+exit
+
+interface fast 0/2
+switchport mode access
+switchport access vlan 50
+exit
+
+interface fast 0/3
+switchport mode access switchport access vlan 60
